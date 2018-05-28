@@ -1,301 +1,164 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js">
-<!--<![endif]-->
-
+<html>
 <head>
+	<title>Identity Leak</title>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>What every Browser knows about you</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">
-    <meta name="description" content="This is a demonstration of all the data your browser knows about you. All this data can be accessed by any website without asking you for any permission.">
-    <link rel="icon" href="favicon.ico?12">
-    <style>
-    html,
-    body {
-        font-family: 'Avenir', 'helvetica neue', helvetica, arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-    }
-    
-    .mdl-card {
-        padding: 16px;
-        width: 80%;
-        max-width: 640px;
-        margin: 24px auto;
-    }
-    
-    header h3 {
-        word-break: break-word;
-        width: 100%;
-        line-height: 36px;
-    }
-    
-    img {
-        max-width: 100%
-    }
-    
-    @media (max-width: 600px) {
-        header h3 {
-            line-height: 26px;
-        }
-        .mdl-card {
-            padding: 8px 0px;
-            width: 100%;
-            margin: 16px auto;
-        }
-        .mdl-layout__header-row {
-            padding: 16px;
-        }
-        .mdl-layout__header-row h3 {
-            font-size: 19px;
-        }
-    }
-    
-    footer {
-        background: #424242;
-        margin-top: 64px;
-        padding: 16px;
-        font-size: 16px;
-        text-align: center;
-        margin-bottom: 49px;
-    }
-    
-    footer a {
-        color: white;
-    }
-    
-    a {
-        text-decoration: none;
-    }
-    
-    a:hover {
-        text-decoration: underline;
-    }
-    </style>
+    <meta name="description" content="Check if your browser leaks your identity">
+	<style type="text/css">
+		body{
+			background: #82B1FF;
+			text-align: center;
+			color: white;
+			font-family: sans-serif;	
+			padding-top: 24px;
+			padding-bottom: 40px;
+			line-height: 20px;
+		}
+
+		form{
+		   margin: 0 auto;
+		   width: 90%;
+		   max-width: 720px;
+		}
+
+		#name{
+			display: inline-block;
+			width: 100%;
+		    font-size: 24px;
+		    -webkit-appearance: none;
+		    -moz-appearance: none;
+		    appearance: none;
+		    box-shadow: none;
+		    border-radius: 3px;
+		    box-sizing: border-box;
+		    background: #448AFF;
+		    color: white;
+		    text-align: center;
+		    padding: 12px;
+		    border: none;
+		    border-bottom: solid 2px #82B1FF;
+		    -webkit-transition: border 0.3s;
+		    transition: border 0.3s;
+		}
+
+		#name:focus {
+    		border-bottom: solid 2px #F48FB1;
+		}
+
+		#innocent{
+			margin-top: 64px;
+		}
+
+		#innocent span{
+			font-size: 11px;
+		}
+
+		#pwnd{
+			margin-top: 80px;
+			-webkit-transition: transform 500ms;
+			transition: transform 500ms;
+			transform: scale(0.01);
+			-webkit-transform: scale(0.01);
+			height: 20px;
+		}
+
+		#pwnd input{
+			background: none;
+		    border: none;
+		    display: inline-block;
+		    padding: 8px;
+		    margin: 0;	
+		}
+
+		a{
+			color: white;
+			text-decoration: none;
+		}
+		a:hover{
+			text-decoration: underline;
+		}
+
+		#explain{
+			text-align: left;
+		}
+
+		footer {
+		    margin-top: 64px;
+		    padding: 16px;
+		    font-size: 16px;
+		    text-align: center;
+		    margin-bottom: 49px;
+		}
+	</style>
 </head>
+<body>
+	<h2>Auto-fill Phishing Demo</h2>
+	<noscript><h1>Javascript must be enabled!</h1><style>h1{margin-top: 80px;}form{display: none;}</style></noscript>
+	<form autocomplete="on">
+		<div id="explain">
+			This is a simple demonstration of a security issue in most browser's  Auto-fill feature.<br> 
+		It is inspired by <i><a href="https://www.theguardian.com/technology/2017/jan/10/browser-autofill-used-to-steal-personal-details-in-new-phising-attack-chrome-safari" target="_blank">a recent publication</a></i> and designed to demonstrate this issue to less tech-savvy users.<br> <b>(Firefox Desktop and iOS Safari are immune from this issue)</b>
+		</div>
+		<div id="innocent">
+			<h3>Start typing or click to use autofill:</h3>
+			<input id="name" name="name" type="text" placeholder="Your Name" autofocus tabindex="1" required autocomplete="name">
+			<br><span>(None of your data will leave your device)</span>
+		</div>
+		<div id="pwnd">
+			<h1>Identity leaked!</h1>
+			Did you notice all those hidden fields?<br><br>
+			<h4>Your Names</h4>
+			<input id="firstname" name="firstname" type="text" >
+			<input id="lastname" name="lastname" type="text">
+			<h4>Your Email</h4>
+			<input id="email" name="email" type="text" id="email">
+			<h4>Your Job</h4>
+			<input id="company" name="company" type="text"> 
+			<h4>Your Address</h4>
+			<input id="street" name="street" type="text" id="street">
+			<input id="postal" name="postal" type="text">
+			<input id="city" name="city" type="text">
+			<input id="country" name="country" type="text"> 
+			<h4>Your Phone Number</h4>
+			<input id="phone" name="phone" type="text">
+			<h4>Credit Card Info</h4>
+			<input id="cc_number" type="text" name="cc_number">
+			<input id="cc_month" type="number" name="cc_month">
+			<input id="cc_year" type="number" name="cc_year">
+			<input id="cc_cvv" type="number" name="cc_cvv">
+			<br><br>
+			<div><strong>Always be suspicious when you use auto-fill!</strong><br>
+			Your browser may fill fields that are hidden from you. 
+			</div><br><br><br>
+		</div>
+	</form>
+<script type="text/javascript">
+	var q = function(id){
+		return document.getElementById(id);
+	}
+	q('name').oninput=function(){
+		debounce(function(){
+			if(q('email').value || q('email').value){
+				var pwnd =q('pwnd').style;
+				pwnd.height='auto';
+				pwnd.transform='scale(1)';
+				document.activeElement.blur();
+			} else {
+				q('pwnd').style.transform='scale(0.01)';
+			}
+		})
+	}
 
-<body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
-            <div class="mdl-layout--large-screen-only mdl-layout__header-row">
-            </div>
-            <div class="mdl-layout--large-screen-only mdl-layout__header-row">
-                <h3>What every Browser knows about you</h3>
-            </div>
-            <div class="mdl-layout--large-screen-only mdl-layout__header-row">
-            </div>
-        </header>
-        <!--             <div class="mdl-card__supporting-text">This is a demonstration of all your data that is leaked when you visit a website. </div> -->
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">fingerprint</i>&nbsp;&nbsp;webkay</h2></div>
-            <div class="mdl-card__supporting-text">
-                <p>
-                    This is a demonstration of all the data your browser knows about you. All this data can be accessed by any website without asking you for any permission.
-                    <br> Most of the data points are educated guesses and not considered to be accurate.
-                </p>
-            </div>
-            <div id="map"></div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">my_location</i>&nbsp;&nbsp;Location</h2></div>
-            <div id="location" class="mdl-card__supporting-text"></div>
-            <div id="map"></div>
-            <div class="mdl-card__supporting-text">
-                <b>Explanation:</b>
-                <br> Webkay uses the Google Geolocation API to locate you. This is an educated guess and never as accurate as a GPS Location. The accuracy depends on your location and also on your connection type. If you are on a mobile network expect an error of up to 50km.
-                <br> This example just tries to demonstrate how accurate a website can guess your location without asking you for permission to access your GPS.
-                <br>
-                <br>
-                <br>
-                <b>Prevention:</b>
-                <br> To prevent your browser from leaking your ip and location, use a <a target="_blank" href="https://www.google.com/search?q=free+web+proxy">Webproxy</a>.
-                <br> This example uses the <a href="https://developers.google.com/maps/documentation/geolocation/intro" target="_blank">Google GeoLocation API</a> to get a more accurate result then "normal" <a href="https://www.google.com/search?q=ip+location" target="_blank">IP Location Lookups</a>. To prevent this, you need to deactivate Javascript in your browser with a browser plugin like <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>.
-                <br>
-                <br>
-                <a href="https://news.ycombinator.com/item?id=11410963" target="_blank">Read ryuuchin's post on privacy plugins!</a>
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">save</i>&nbsp;&nbsp;Software</h2></div>
-            <div class="mdl-card__supporting-text">
-                <b>Operating System</b>
-                <div id="os"></div>
-                <br>
-                <b>Browser</b>
-                <div id="browser"></div>
-                <br>
-                <b>Browser Plugins</b>
-                <div id="plugins">No plugins detected.</div>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent your browser from leaking information about your software use <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>.
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">computer</i>&nbsp;&nbsp;Hardware</h2></div>
-            <div class="mdl-card__supporting-text">
-                <div id="device"></div>
-                <br>
-                <div id="display"></div>
-                <br>
-                <div id="gpu"></div>
-                <br>
-                <div id="battery">
-                    <div id="charging"></div>
-                    <div id="level"></div>
-                    <div id="dischargingTime"></div>
-                </div>
-                <div id="ambient"></div>
-                <canvas id="glcanvas" width="1" height="1"></canvas>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent your browser from leaking device information use <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>.
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">wifi_tethering</i>&nbsp;&nbsp;Connection</h2></div>
-            <div class="mdl-card__supporting-text">
-                <div id="referrer"></div>
-                <div id="connection"></div>
-                <br>
-                <div id="isp"></div>
-                <br>
-                <div id="networkType"></div>
-                <div id="speed">Performing speedtest, please wait...</div>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent your browser from leaking information about your connection use <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>, a <a target="_blank" href="https://www.google.com/search?q=free+web+proxy">Webproxy</a>, or <a target="_blank" href="https://www.google.com/search?q=tor%20project">Tor</a>.
-                <br> To prevent the local ip leak <a target="_blank" href="https://www.google.com/search?q=webrtc+disable">Disable WebRTC or install a Leak Prevent Plugin</a>
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">group</i>&nbsp;&nbsp;Social Media</h2></div>
-            <div id="socialMedia" class="mdl-card__supporting-text"></div>
-            <div class="mdl-card__supporting-text">
-                <b>Explanation:</b>
-                <br>
-                <a target="_blank" href="https://news.ycombinator.com/item?id=11415462">See this post by <i>eatsfoobars</i></a>
-                <br>
-                <br>
-                <br>
-                <b>Prevention:</b>
-                <br> To prevent your browser from leaking information about your social networks, logout, use <a target="_blank" href="https://www.google.com/search?q=private%browsing">Private Browsing</a>, or <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>.
-                <br>
-                <br>Although those Vulnerabilities are <a href="http://www.tomanthony.co.uk/blog/detect-visitor-social-networks/" target="_blank">well known for several years</a>, <a href="clickjacking/redirect-statements.txt" target="_blank">none of the vulnerable companies wants to fix them</a>.
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">mouse</i>&nbsp;&nbsp;Click Jacking</h2></div>
-            <div class="mdl-card__supporting-text">
-                Misuses your Google/Facebook Account to reveal your identity.
-                <ul>
-                    <li>
-                        <a target="_blank">Google Plus fixed the bug.</a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="clickjacking/facebook.html">Facebook Clickjacking seems to work again.</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent getting clickjacked, do not visit dubious sites, use <a target="_blank" href="https://www.google.com/search?q=private%browsing">Private Browsing</a>, or <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>.
-                <br>
-                <br> Those Vulnerabilities are <a href="https://www.youtube.com/watch?v=bCkSVGhIEb4" target="_blank">well known for years</a>.
-                <!-- , though <a href="clickjacking/google-statement.txt" target="_blank">neither Google</a> nor Facebook wanted to fix them -->. <a target="_blank" href="https://dev.twitter.com/web/overview">Twitter's social widgets</a> are not vulnerable to this, because you need to confirm your actions in a seperate window.
-            </div>
-        </div>
-
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">mouse</i>&nbsp;&nbsp;Auto-Fill Phishing</h2></div>
-            <div class="mdl-card__supporting-text">
-                Misuses your browser's Auto-fill feature to steal your identity.<br><br>
-                <a href="./AutoFill/" target="_blank">Autofill Phishing demo</a>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent this attack you should disable the autofill feature, or at least never use it on dubious websites!
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">3d_rotation</i>&nbsp;&nbsp;Gyroscope</h2></div>
-            <div class="mdl-card__supporting-text" id="gyroscope">
-            </div>
-            <iframe id="compass" src="compass/index.html" style="width:280px;height:280px;"></iframe>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent your browser from accessing your Device Orientation use <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>.
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp" id="scanner">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">leak_add</i>&nbsp;&nbsp;Network Scan</h2></div>
-            <div id="networkscan" class="mdl-card__supporting-text">
-                Any webpage can scan your local network for devices.
-                <br>
-                <button onclick="scanMyNetwork(ip); document.querySelector('#progress').hidden=false;">Scan my Network</button> (A malicious website could do that without consent.)
-                <br>
-                <span id="progress" hidden>Scanning Network, please wait...</span>
-                <br><b>Devices in your local network:</b>
-                <br>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent your browser from scanning your Network use <a target="_blank" href="https://www.google.com/search?q=noscript">NoScript</a>.
-            </div>
-        </div>
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text"><i class="material-icons" role="presentation">image</i>&nbsp;&nbsp;Images</h2></div>
-            <div class="mdl-card__supporting-text" id="exif">
-                Select an Image to see what it's meta data reveals.
-                <br>
-                <input type="file" accept="image/*" id="file">
-                <br>
-                <img onclick="file.click()">
-            </div>
-            <div class="mdl-card__supporting-text" id="imageMeta">
-            </div>
-            <div class="mdl-card__supporting-text">
-                <b>Prevention:</b>
-                <br> To prevent your browser and other servers from accessing the meta data in your images, <a target="_blank" href="https://www.google.com/search?q=remove+exif+data">Remove the EXIF Data</a> before you upload them.
-            </div>
-        </div>
-    </div>
-    <footer>
-        <a href="https://robinlinus.github.io" target="_blank" id="about">Built with ♥ by Nishant Bhatt - ESRG</a>
-    </footer>
-    <script src="scripts/iso639.js"></script>
-    <script src="scripts/google-geolocation.js"></script>
-    <script src="scripts/ua-parser.js"></script>
-    <script src="scripts/device.js"></script>
-    <script src="scripts/network-scanner.js"></script>
-    <script src="scripts/ip.js"></script>
-    <script src="scripts/social-media.js"></script>
-    <script src="scripts/exif.js"></script>
-    <script src="scripts/images.js"></script>
-    <script src="scripts/gyroscope.js"></script>
-    <script src="scripts/speedtest.js"></script>
-    <!--     <script src="scripts/plugins.js"></script>
- -->
-
+	var timer = null;
+	function debounce(callback){
+		if(timer){
+			clearTimeout(timer);
+		}
+		timer = setTimeout(callback,500);
+	}
+</script>
 </body>
 </html>
