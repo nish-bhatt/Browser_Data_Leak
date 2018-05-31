@@ -135,9 +135,9 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
     </script>
-    <div class="fb-like" data-href="https://www.facebook.com/nishantbhatt.4u" data-layout="standard" data-action="like" data-show-faces="false" data-share="false"></div>
+    <div class="fb-like" data-href="https://www.facebook.com/RobinLinus" data-layout="standard" data-action="like" data-show-faces="false" data-share="false"></div>
     <div id="clickjack">
-        <a href="https://www.facebook.com/nishantbhatt.4u" target="_blank">Here you can see the FB-Page you just liked.</a>
+        <a href="https://www.facebook.com/RobinLinus" target="_blank">Here you can see the FB-Page you just liked.</a>
     </div>
     <script>
     'use strict';
@@ -167,9 +167,7 @@
     </script>
 </body>
 <!-- 
-
 this must be done on the server-side:
-
 FB.api(
     "451189218422617_452743104933895/likes",
     function (response) {
@@ -180,18 +178,11 @@ FB.api(
       }
     }
 ); 
-
 here you can access some user id's without login
 https://www.facebook.com/plugins/fan.php?connections=100&id=451189218422617
 https://www.facebook.com/plugins/fan.php?connections=100&id=406272506205378
-
 curl https://www.facebook.com/plugins/fan.php\?connections\=100\&id\=406272506205378  | grep -o -E 'href="([^"#]+)"' | cut -d'"' -f2 | sort | uniq
-
 curl https://www.facebook.com/plugins/fan.php\?connections\=100\&id\=100006884027110  | grep -o -E 'href="([^"#]+)"' | cut -d'"' -f2 | sort | uniq
-
-
 curl https://www.facebook.com/plugins/fan.php\?connections\=100\&id\=406272506205378  | grep -o -E 'https://www.facebook.com/profile.php?id=([^"#]+)"' | cut -d'"' -f2 | sort | uniq
-
 -->
-
 </html>
